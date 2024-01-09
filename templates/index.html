@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Regression</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Linear Regression</h1>
+
+    <h2>Data Points</h2>
+    <form action="/add_data" method="post">
+        <label for="x">X Value:</label>
+        <input type="number" step="any" name="x" required>
+        
+        <label for="y">Y Value:</label>
+        <input type="number" step="any" name="y" required>
+        
+        <button type="submit">Add Data</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>X</th>
+            <th>Y</th>
+            <th>Action</th>
+        </tr>
+        {% for i in range(data_points['x']|length) %}
+        <tr>
+            <td>{{ data_points['x'][i] }}</td>
+            <td>{{ data_points['y'][i] }}</td>
+            <td>
+                <form action="{{ url_for('delete_data') }}" method="post">
+                    <input type="hidden" name="index" value="{{ i }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <form action="/plot" method="get">
+        <button type="submit">View Plot</button>
+    </form>
+
+    {% if regression_line['slope'] is not none %}
+        <h2>Regression Line</h2>
+        <p>Slope: {{ regression_line['slope'] }}</p>
+        <p>Intercept: {{ regression_line['intercept'] }}</p>
+        
+        <img src="{{ url_for('plot') }}" alt="Regression Line">
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
